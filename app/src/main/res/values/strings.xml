@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Computer Science Project</string>
+    <string name="sign_up_heading.label.title">Sign Up</string>
+    <string name="sign_up_email.label.title">Email</string>
+    <string name="sign_up_email.placeholder.title">Enter your email address</string>
+    <string name="sign_up_password.label.title">Password</string>
+    <string name="sign_up_password.placeholder.title">Enter your password</string>
+    <string name="sign_up_confirm.password.label.title">Confirm Password</string>
+    <string name="sign_up_confirm.password.placeholder.title">Confirm your password</string>
+    <string name="sign_up_button.label.title">Create Account</string>
+    <string name="sign_up_already.have.account.label.title">Already have an account?</string>
+    <string name="sign_up_login.label.title">Sign In</string>
 </resources>
