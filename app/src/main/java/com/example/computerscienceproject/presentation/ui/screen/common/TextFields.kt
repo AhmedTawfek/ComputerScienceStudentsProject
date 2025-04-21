@@ -38,8 +38,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.computerscienceproject.R
+import com.example.computerscienceproject.presentation.ui.theme.ComputerScienceProjectTheme
 import com.example.computerscienceproject.presentation.ui.theme.lightGrey
 import com.example.computerscienceproject.presentation.ui.theme.lightGrey2
 
@@ -51,11 +55,14 @@ fun textFieldColors(
     unfocusedBorderColor: Color = MaterialTheme.colorScheme.outline,
     unfocusedTextColor: Color = MaterialTheme.colorScheme.onSurface,
     cursorColor: Color = MaterialTheme.colorScheme.primary,
-    focusedTextColor: Color = MaterialTheme.colorScheme.onSurface,
+    focusedTextColor: Color = MaterialTheme.colorScheme.onPrimary,
     unfocusedLeadingIconColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     focusedLeadingIconColor: Color = MaterialTheme.colorScheme.primary, // assuming Brand is Color.Blue for simplicity
     unfocusedTrailingIconColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     focusedTrailingIconColor: Color = MaterialTheme.colorScheme.primary,
+    disabledBorderColor : Color = MaterialTheme.colorScheme.outline,
+    disabledContainerColor : Color = MaterialTheme.colorScheme.surfaceContainer,
+    errorContainerColor : Color = MaterialTheme.colorScheme.surfaceContainer,
     errorBorderColor: Color = MaterialTheme.colorScheme.error,
     errorCursorColor: Color = MaterialTheme.colorScheme.error,
     errorTextColor: Color = MaterialTheme.colorScheme.onSurface,
@@ -72,9 +79,12 @@ fun textFieldColors(
         focusedLeadingIconColor = focusedLeadingIconColor,
         unfocusedTrailingIconColor = unfocusedTrailingIconColor,
         focusedTrailingIconColor = focusedTrailingIconColor,
+        errorContainerColor = errorContainerColor,
         errorBorderColor = errorBorderColor,
-        errorContainerColor = errorCursorColor,
         errorTextColor = errorTextColor,
+        errorCursorColor = errorCursorColor,
+        disabledBorderColor = disabledBorderColor,
+        disabledContainerColor = disabledContainerColor
     )
 
 
@@ -82,15 +92,16 @@ fun textFieldColors(
 @Composable
 private fun BaseOutlinedTextField(
     modifier: Modifier = Modifier,
-    textModifier: Modifier = Modifier,
+    textModifier: Modifier = Modifier.padding(vertical = 14.dp, horizontal = 12.dp),
     text: String = "",
-    textColor: Color = MaterialTheme.colorScheme.onSurface,
+    textColor: Color = MaterialTheme.colorScheme.onPrimary,
     textStyle: TextStyle = MaterialTheme.typography.titleSmall,
     hint: String = "",
     hintTextStyle: TextStyle = MaterialTheme.typography.titleSmall,
     hintTextColor: Color = lightGrey,
     colors: TextFieldColors = textFieldColors(),
     keyboardType: KeyboardType = KeyboardType.Text,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     shape: Shape = RoundedCornerShape(7.dp),
     imeAction: ImeAction = ImeAction.Done,
     borderThick: Dp = 1.dp,
@@ -98,8 +109,9 @@ private fun BaseOutlinedTextField(
     leadingIconSize: Dp = 20.dp,
     leadingIconPadding: Dp = 0.dp,
     trailingIcon: Int? = null,
+    customTrailingIconColor: Color? = null,
     trailingIconSize: Dp = 22.dp,
-    trailingIconPadding: Dp = 0.dp,
+    trailingIconPadding: Dp = 10.dp,
     trailingIconOnClick: () -> Unit = {},
     customTrailingIcon: @Composable (() -> Unit)? = null,
     isEnabled: Boolean = true,
@@ -132,7 +144,7 @@ private fun BaseOutlinedTextField(
                     onClick()
                 },
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType).copy(imeAction = imeAction),
-            visualTransformation = VisualTransformation.None,
+            visualTransformation = visualTransformation,
             cursorBrush = SolidColor(colors.cursorColor),
             interactionSource = interactionSource,
             enabled = isEnabled,
@@ -156,7 +168,7 @@ private fun BaseOutlinedTextField(
                 },
                 enabled = isEnabled,
                 singleLine = singleLine,
-                visualTransformation = VisualTransformation.None,
+                visualTransformation = visualTransformation,
                 interactionSource = interactionSource,
                 contentPadding = PaddingValues(0.dp),
                 container = {
@@ -192,7 +204,7 @@ private fun BaseOutlinedTextField(
                                 .size(trailingIconSize)
                                 .clickable { trailingIconOnClick() },
                             contentDescription = "Trailing Icon",
-                            tint = if (isFocused || isError) colors.focusedTrailingIconColor else colors.unfocusedTrailingIconColor,
+                            tint = customTrailingIconColor ?: (if (isFocused || isError) colors.focusedTrailingIconColor else colors.unfocusedTrailingIconColor),
                         )
                     }
                 } else if (customTrailingIcon != null) {
@@ -204,6 +216,34 @@ private fun BaseOutlinedTextField(
                 },
             )
         }
+}
+
+@Composable
+fun PrimaryTextFieldCheckbox(
+    modifier: Modifier = Modifier,
+    text : String,
+    textStyle: TextStyle = MaterialTheme.typography.titleSmall.copy(fontSize = 16.sp),
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit = {}) {
+
+    val borderStroke = if (checked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+
+    BaseOutlinedTextField(
+        modifier = modifier,
+        text = text,
+        textStyle = textStyle,
+        hint = "",
+        borderThick = if (checked) 2.dp else 1.dp,
+        colors = textFieldColors(unfocusedBorderColor = borderStroke,focusedBorderColor = borderStroke, disabledBorderColor = borderStroke),
+        trailingIcon = if (checked) R.drawable.checkbox_icon else null,
+        customTrailingIconColor = Color.Unspecified,
+        trailingIconSize = 20.dp,
+        trailingIconPadding = 16.dp,
+        trailingIconOnClick = { onCheckedChange(!checked) },
+        onClick = { onCheckedChange(!checked) },
+        readOnly = false,
+        isEnabled = false
+    )
 }
 
 @Composable
@@ -221,6 +261,7 @@ fun PrimaryOutlinedTextField(
     error: String = "",
     colors: TextFieldColors = textFieldColors(),
     keyboardType: KeyboardType = KeyboardType.Text,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
     shape: Shape = RoundedCornerShape(7.dp),
     singleLine: Boolean = true,
     leadingIcon: Int? = null,
@@ -239,7 +280,6 @@ fun PrimaryOutlinedTextField(
     onClick: () -> Unit = {},
     onValueChange: (String) -> Unit = {},
 ) {
-
     Column {
         if (title.isNotEmpty()) {
             TitleOnTopOfInputField(title = title, textStyle = titleStyle, horizontalPadding = titleHorizontalPadding)
@@ -270,6 +310,7 @@ fun PrimaryOutlinedTextField(
             customTrailingIcon = customTrailingIcon,
             trailingIconSize = trailingIconSize,
             keyboardType = keyboardType,
+            visualTransformation = visualTransformation,
             isFocusedChange = onFocusChange,
             onValueChange = { onValueChange(it) },
             onClick = onClick
@@ -278,7 +319,7 @@ fun PrimaryOutlinedTextField(
         if (error.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding(
-                    top = 4.dp,
+                    top = 6.dp,
                     start = titleHorizontalPadding,
                     end = titleHorizontalPadding
                 ),
@@ -288,4 +329,14 @@ fun PrimaryOutlinedTextField(
             )
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewCheckbox() {
+
+    ComputerScienceProjectTheme {
+        PrimaryTextFieldCheckbox(text = "Male", checked = true)
+    }
+
 }

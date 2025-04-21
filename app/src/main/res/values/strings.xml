@@ -8,6 +8,18 @@
     <string name="sign_up_confirm.password.label.title">Confirm Password</string>
     <string name="sign_up_confirm.password.placeholder.title">Confirm your password</string>
     <string name="sign_up_button.label.title">Create Account</string>
-    <string name="sign_up_already.have.account.label.title">Already have an account?</string>
+    <string name="sign_up_already.have.account.button.title">Already have an account?</string>
     <string name="sign_up_login.label.title">Sign In</string>
+    <string name="sign_up_email.not.correct.label.title">Email is not correct</string>
+
+    <string name="sign_in_heading.label.title">Log In</string>
+    <string name="sign_in_email.label.title">Email</string>
+    <string name="sign_in_email.placeholder.title">Enter your email address</string>
+    <string name="sign_in_password.label.title">Password</string>
+    <string name="sign_in_password.placeholder.title">Enter your password</string>
+    <string name="sign_in_button.label.title">Log In</string>
+    <string name="sign_in_forgot.password.label.title">Forgot Password?</string>
+    <string name="sign_in_already.have.account.button.title">Sign Up</string>
+    <string name="sign_in_already.have.account.label.title">Don\'t have an account?</string>
+
 </resources>

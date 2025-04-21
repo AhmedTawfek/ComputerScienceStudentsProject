@@ -1,4 +1,4 @@
-package com.example.computerscienceproject.presentation.ui.screen.sign_up
+package com.example.computerscienceproject.presentation.ui.screen.sign_in
 
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
@@ -34,16 +34,18 @@ import com.example.computerscienceproject.presentation.ui.screen.common.Clickabl
 import com.example.computerscienceproject.presentation.ui.screen.common.HeaderTitle
 import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryButton
 import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryOutlinedTextField
+import com.example.computerscienceproject.presentation.ui.screen.sign_in.viewmodel.SignInScreenEvents
+import com.example.computerscienceproject.presentation.ui.screen.sign_in.viewmodel.SignInUiState
 import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpScreenEvents
-import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpUiState
 import com.example.computerscienceproject.presentation.ui.theme.ComputerScienceProjectTheme
 
 @Composable
-fun SignUpScreen(
+fun SignInScreen(
     modifier: Modifier = Modifier,
-    state: SignUpUiState = SignUpUiState(),
-    onAction: (SignUpScreenEvents) -> Unit = {},
+    state : SignInUiState = SignInUiState(),
+    onAction: (SignInScreenEvents) -> Unit = {}
 ) {
+
     val context = LocalContext.current
 
     Box(
@@ -57,26 +59,26 @@ fun SignUpScreen(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 66.dp),
-            text = stringResource(id = R.string.sign_up_heading_label_title)
+            text = stringResource(id = R.string.sign_in_heading_label_title)
         )
 
         Column(modifier = Modifier.align(Alignment.Center)) {
 
             PrimaryOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                title = stringResource(id = R.string.sign_up_email_label_title),
-                hint = stringResource(id = R.string.sign_up_email_placeholder_title),
+                title = stringResource(id = R.string.sign_in_email_label_title),
+                hint = stringResource(id = R.string.sign_in_email_placeholder_title),
                 text = state.email,
                 error = state.emailError,
                 onFocusChange = { hasFocus ->
                     if (!hasFocus && state.email.isNotEmpty()) {
-                        onAction(SignUpScreenEvents.ValidateEmail(emailError = context.getString(R.string.sign_up_email_not_correct_label_title)))
+                        onAction(SignInScreenEvents.ValidateEmail(emailError = context.getString(R.string.sign_up_email_not_correct_label_title)))
                     }
                 },
                 onValueChange = {
-                    onAction(SignUpScreenEvents.EmailChanged(it))
+                    onAction(SignInScreenEvents.EmailChanged(it))
                     if (state.emailError.isNotEmpty()) {
-                        onAction(SignUpScreenEvents.ValidateEmail(emailError = context.getString(R.string.sign_up_email_not_correct_label_title)))
+                        onAction(SignInScreenEvents.ValidateEmail(emailError = context.getString(R.string.sign_up_email_not_correct_label_title)))
                     }
                 }
             )
@@ -87,8 +89,8 @@ fun SignUpScreen(
 
             PrimaryOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                title = stringResource(id = R.string.sign_up_password_label_title),
-                hint = stringResource(id = R.string.sign_up_password_placeholder_title),
+                title = stringResource(id = R.string.sign_in_password_label_title),
+                hint = stringResource(id = R.string.sign_in_password_placeholder_title),
                 trailingIcon = if (showPassword) R.drawable.visiblity_off_icon else R.drawable.visibility_on_icon,
                 keyboardType = if (showPassword) KeyboardType.Text else KeyboardType.Password,
                 visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
@@ -100,54 +102,23 @@ fun SignUpScreen(
                 error = state.passwordError,
                 onFocusChange = { hasFocus ->
                     if (!hasFocus && state.password.isNotEmpty()) {
-                        onAction(SignUpScreenEvents.ValidatePassword)
+                        onAction(SignInScreenEvents.ValidateEmail(emailError = context.getString(R.string.sign_up_email_not_correct_label_title)))
                     }
                 },
                 onValueChange = {
-                    onAction(SignUpScreenEvents.PasswordChanged(it))
+                    onAction(SignInScreenEvents.PasswordChanged(it))
                     if (state.passwordError.isNotEmpty()) {
-                        onAction(SignUpScreenEvents.ValidatePassword)
+                        onAction(SignInScreenEvents.ValidateEmail(emailError = context.getString(R.string.sign_up_email_not_correct_label_title)))
                     }
                 }
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            var showConfirmPassword by remember { mutableStateOf(false) }
-
-            PrimaryOutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                title = stringResource(id = R.string.sign_up_confirm_password_label_title),
-                hint = stringResource(id = R.string.sign_up_confirm_password_placeholder_title),
-                trailingIcon = if (showConfirmPassword) R.drawable.visiblity_off_icon else R.drawable.visibility_on_icon,
-                keyboardType = if (showConfirmPassword) KeyboardType.Text else KeyboardType.Password,
-                visualTransformation = if (showConfirmPassword) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIconSize = 24.dp,
-                trailingIconOnClick = {
-                    showConfirmPassword = !showConfirmPassword
-                },
-                text = state.confirmPassword,
-                error = state.confirmPasswordError,
-                onFocusChange = { hasFocus ->
-                    if (!hasFocus && state.confirmPassword.isNotEmpty()) {
-                        onAction(SignUpScreenEvents.ValidateConfirmPassword)
-                    }
-                },
-                onValueChange = {
-                    onAction(SignUpScreenEvents.ConfirmPasswordChanged(it))
-                    if (state.confirmPasswordError.isNotEmpty()) {
-                        onAction(SignUpScreenEvents.ValidateConfirmPassword)
-                    }
-                }
-            )
-
-            Spacer(modifier = Modifier.height(38.dp))
-
             PrimaryButton(
-                isEnabled = (state.email.isNotEmpty() && state.emailError.isEmpty()) && (state.password.isNotEmpty() && state.passwordError.isEmpty()) && (state.confirmPassword.isNotEmpty() && state.confirmPasswordError.isEmpty()),
-                isLoading = state.isLoading,
-                text = stringResource(id = R.string.sign_up_button_label_title)
-            ) {
+                text = stringResource(id = R.string.sign_in_button_label_title),
+                isEnabled = (state.email.isNotEmpty() && state.emailError.isEmpty()) && (state.password.isNotEmpty() && state.passwordError.isEmpty()),
+                isLoading = state.isLoading) {
 
             }
         }
@@ -155,14 +126,13 @@ fun SignUpScreen(
         Row(modifier = Modifier.align(Alignment.BottomCenter)) {
 
             Text(
-                text = stringResource(id = R.string.sign_up_already_have_account_button_title),
-                style = MaterialTheme.typography.labelMedium
-            )
+                text = stringResource(id = R.string.sign_in_already_have_account_label_title),
+                style = MaterialTheme.typography.labelMedium)
 
             Spacer(modifier = Modifier.width(6.dp))
 
             ClickableText(
-                text = stringResource(id = R.string.sign_up_login_label_title),
+                text = stringResource(id = R.string.sign_in_already_have_account_button_title),
                 textStyle = MaterialTheme.typography.labelMedium
             ) {
 
@@ -172,15 +142,14 @@ fun SignUpScreen(
 
         }
     }
-
 }
 
 @Preview
 @Composable
-private fun SignUpPreview() {
+private fun SignInPreview() {
     ComputerScienceProjectTheme {
         Surface(color = MaterialTheme.colorScheme.background) {
-            SignUpScreen()
+            SignInScreen()
         }
     }
 }

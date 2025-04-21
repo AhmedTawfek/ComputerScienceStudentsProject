@@ -37,7 +37,7 @@ fun ClickableText(
     modifier: Modifier = Modifier,
     text: String = "More",
     textStyle: TextStyle = MaterialTheme.typography.titleSmall,
-    textColor: Color = MaterialTheme.colorScheme.secondary,
+    textColor: Color = MaterialTheme.colorScheme.primary,
     onClick: () -> Unit
 ) {
     Text(

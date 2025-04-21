@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 
 
 private val DarkColorScheme = darkColorScheme(
+
     primary = brand,
     secondary = brand2,
     onPrimary = white2,
@@ -22,6 +23,9 @@ private val DarkColorScheme = darkColorScheme(
     onSurfaceVariant = lightGrey2, // For icons on textFields
     outline = darkGrey2, // Border
     error = red,
+
+    // Disabled Colors
+    surfaceVariant = darkGrey3,
 )
 
 @Composable
