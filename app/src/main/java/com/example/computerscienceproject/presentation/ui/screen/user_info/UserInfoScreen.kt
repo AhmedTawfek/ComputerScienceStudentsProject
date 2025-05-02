@@ -10,30 +10,34 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
 import com.example.computerscienceproject.presentation.ui.screen.common.BackButton
 import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryButton
 import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryTextFieldCheckbox
 import com.example.computerscienceproject.presentation.ui.screen.common.UserInfoIndicators
 import com.example.computerscienceproject.presentation.ui.screen.common.wheel_picker.PrimaryWheelPicker
-import com.example.computerscienceproject.presentation.ui.screen.user_info.viewmodel.UserInfoModel
-import com.example.computerscienceproject.presentation.ui.screen.user_info.viewmodel.UserInfoScreenEvents
-import com.example.computerscienceproject.presentation.ui.screen.user_info.viewmodel.UserInfoType
-import com.example.computerscienceproject.presentation.ui.screen.user_info.viewmodel.UserInfoUiState
+import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpScreenEvents
+import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpUiState
+import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.UserInfoModel
+import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.UserInfoType
 import com.example.computerscienceproject.presentation.ui.theme.ComputerScienceProjectTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
-
 
 @Composable
 fun UserInfoScreen(
     modifier: Modifier = Modifier,
-    userInfoUiState: UserInfoUiState = UserInfoUiState(
+    userInfoUiState: SignUpUiState = SignUpUiState(
         currentPageIndex = 0,
         userInfoList = listOf(
             UserInfoModel(
@@ -60,10 +64,17 @@ fun UserInfoScreen(
             )
         )
     ),
-    onAction: (UserInfoScreenEvents) -> Unit = {},
+    onAction: (SignUpScreenEvents) -> Unit = {},
+    screenEvents : Flow<ScreenEvents> = emptyFlow(),
+    onScreenEvents : (ScreenEvents) -> Unit = {}
 ){
-
     val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(true) {
+        screenEvents.collect{event ->
+            onScreenEvents(event)
+        }
+    }
 
     Column(modifier = modifier.padding(vertical = 10.dp, horizontal = 24.dp)) {
 
@@ -73,7 +84,7 @@ fun UserInfoScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.CenterHorizontally),
-            count = 4,
+            count = userInfoUiState.userInfoList.size,
             currentSelectedIndex = userInfoUiState.currentPageIndex
         )
 
@@ -95,7 +106,7 @@ fun UserInfoScreen(
                         options = userInfoUiState.userInfoList[currentPageIndex].options,
                         selectedIndex = userInfoUiState.userInfoList[currentPageIndex].selectedIndex,
                         onCheckedChange = {
-                            onAction(UserInfoScreenEvents.OnCheckboxClicked(it))
+                            onAction(SignUpScreenEvents.OnCheckboxClicked(it))
                         }
                     )
                 }
@@ -106,7 +117,7 @@ fun UserInfoScreen(
                         options = userInfoUiState.userInfoList[currentPageIndex].options,
                         defaultSelectedIndex = userInfoUiState.userInfoList[currentPageIndex].selectedIndex,
                         onItemSelected = {
-                            onAction(UserInfoScreenEvents.OnWheelPickerSelected(it))
+                            onAction(SignUpScreenEvents.OnWheelPickerSelected(it))
                         }
                     )
                 }
@@ -121,7 +132,7 @@ fun UserInfoScreen(
 
             if (userInfoUiState.currentPageIndex > 0) {
                 BackButton {
-                    onAction(UserInfoScreenEvents.OnPreviousClicked)
+                    onAction(SignUpScreenEvents.OnPreviousClicked)
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(userInfoUiState.currentPageIndex - 1)
                     }
@@ -133,13 +144,14 @@ fun UserInfoScreen(
             PrimaryButton(
                 text = if (userInfoUiState.currentPageIndex < userInfoUiState.userInfoList.size - 1) "Next" else "Finish",
                 isEnabled = (userInfoUiState.userInfoList[userInfoUiState.currentPageIndex].selectedIndex) != -1) {
+
                 if (userInfoUiState.currentPageIndex < userInfoUiState.userInfoList.size - 1) {
-                    onAction(UserInfoScreenEvents.OnNextClicked)
+                    onAction(SignUpScreenEvents.OnNextClicked)
                     coroutineScope.launch {
                         pagerState.animateScrollToPage(userInfoUiState.currentPageIndex + 1)
                     }
                 } else {
-                    //onAction(UserInfoScreenEvents.OnFinishClicked)
+                    onAction(SignUpScreenEvents.CompleteSignUp)
                 }
             }
         }
@@ -219,6 +231,8 @@ fun UserInfoWheelPicker(
 @Composable
 private fun PreviewUserInfoScreen() {
     ComputerScienceProjectTheme {
-        UserInfoScreen()
+        Surface(color = MaterialTheme.colorScheme.background) {
+            UserInfoScreen()
+        }
     }
 }

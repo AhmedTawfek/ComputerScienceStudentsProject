@@ -21,7 +21,7 @@ val grotaFontFamily = FontFamily(
 
 val Typography = Typography(
     titleLarge = TextStyle(
-        fontFamily = grotaFontFamily,
+        fontFamily = robotoFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 26.sp,
     ),
@@ -45,4 +45,5 @@ val Typography = Typography(
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
     ),
+
 )

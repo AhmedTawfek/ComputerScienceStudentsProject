@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.computerscienceproject.R
+import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
 import com.example.computerscienceproject.presentation.ui.screen.common.ClickableText
 import com.example.computerscienceproject.presentation.ui.screen.common.HeaderTitle
 import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryButton
@@ -37,14 +39,24 @@ import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryO
 import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpScreenEvents
 import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpUiState
 import com.example.computerscienceproject.presentation.ui.theme.ComputerScienceProjectTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
     state: SignUpUiState = SignUpUiState(),
     onAction: (SignUpScreenEvents) -> Unit = {},
+    screenEvents : Flow<ScreenEvents> = emptyFlow(),
+    onScreenEvents : (ScreenEvents) -> Unit = {}
 ) {
     val context = LocalContext.current
+
+    LaunchedEffect(true) {
+        screenEvents.collect{event ->
+            onScreenEvents(event)
+        }
+    }
 
     Box(
         modifier = modifier
@@ -61,6 +73,27 @@ fun SignUpScreen(
         )
 
         Column(modifier = Modifier.align(Alignment.Center)) {
+
+            PrimaryOutlinedTextField(
+                modifier = Modifier.fillMaxWidth(),
+                title = stringResource(id = R.string.sign_up_name_label_title),
+                hint = stringResource(id = R.string.sign_up_name_placeholder_title),
+                text = state.name,
+                error = state.nameError,
+                onFocusChange = { hasFocus ->
+                    if (!hasFocus && state.name.isNotEmpty()) {
+                        onAction(SignUpScreenEvents.ValidateName)
+                    }
+                },
+                onValueChange = {
+                    onAction(SignUpScreenEvents.NameChanged(it))
+                    if (state.nameError.isNotEmpty()) {
+                        onAction(SignUpScreenEvents.ValidateName)
+                    }
+                }
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
 
             PrimaryOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
@@ -148,7 +181,7 @@ fun SignUpScreen(
                 isLoading = state.isLoading,
                 text = stringResource(id = R.string.sign_up_button_label_title)
             ) {
-
+                onAction(SignUpScreenEvents.SignUp)
             }
         }
 
@@ -165,7 +198,7 @@ fun SignUpScreen(
                 text = stringResource(id = R.string.sign_up_login_label_title),
                 textStyle = MaterialTheme.typography.labelMedium
             ) {
-
+                onAction(SignUpScreenEvents.NavigateToSignIn)
             }
 
             Spacer(modifier = Modifier.height(50.dp))

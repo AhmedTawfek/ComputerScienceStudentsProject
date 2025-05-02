@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.computerscienceproject.R
+import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
 import com.example.computerscienceproject.presentation.ui.screen.common.ClickableText
 import com.example.computerscienceproject.presentation.ui.screen.common.HeaderTitle
 import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryButton
@@ -38,15 +40,25 @@ import com.example.computerscienceproject.presentation.ui.screen.sign_in.viewmod
 import com.example.computerscienceproject.presentation.ui.screen.sign_in.viewmodel.SignInUiState
 import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpScreenEvents
 import com.example.computerscienceproject.presentation.ui.theme.ComputerScienceProjectTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
 fun SignInScreen(
     modifier: Modifier = Modifier,
     state : SignInUiState = SignInUiState(),
-    onAction: (SignInScreenEvents) -> Unit = {}
+    onAction: (SignInScreenEvents) -> Unit = {},
+    screenEvents : Flow<ScreenEvents> = emptyFlow(),
+    onScreenEvents : (ScreenEvents) -> Unit = {}
 ) {
 
     val context = LocalContext.current
+
+    LaunchedEffect(true) {
+        screenEvents.collect{event ->
+            onScreenEvents(event)
+        }
+    }
 
     Box(
         modifier = modifier
@@ -119,7 +131,7 @@ fun SignInScreen(
                 text = stringResource(id = R.string.sign_in_button_label_title),
                 isEnabled = (state.email.isNotEmpty() && state.emailError.isEmpty()) && (state.password.isNotEmpty() && state.passwordError.isEmpty()),
                 isLoading = state.isLoading) {
-
+                onAction(SignInScreenEvents.Login)
             }
         }
 
@@ -135,7 +147,7 @@ fun SignInScreen(
                 text = stringResource(id = R.string.sign_in_already_have_account_button_title),
                 textStyle = MaterialTheme.typography.labelMedium
             ) {
-
+                onAction(SignInScreenEvents.NavigateToSignUp)
             }
 
             Spacer(modifier = Modifier.height(50.dp))

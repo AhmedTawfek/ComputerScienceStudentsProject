@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Computer Science Project</string>
+    <string name="network_not_available">No internet connection!</string>
+    <string name="api_error">Something went wrong, please try again.</string>
+
     <string name="sign_up_heading.label.title">Sign Up</string>
+    <string name="sign_up_name.label.title">Name</string>
+    <string name="sign_up_name.placeholder.title">Enter your full name</string>
     <string name="sign_up_email.label.title">Email</string>
     <string name="sign_up_email.placeholder.title">Enter your email address</string>
     <string name="sign_up_password.label.title">Password</string>

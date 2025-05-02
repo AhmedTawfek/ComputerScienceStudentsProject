@@ -12,6 +12,7 @@ composeBom = "2024.04.01"
 retrofit = "2.11.0"
 gson = "2.10.1"
 ## Dependency Injection ##
+datastorePreferences = "1.1.1"
 hiltAndroid = "2.52"
 hiltCompiler = "2.51.1"
 ## Serilization ##
@@ -23,6 +24,7 @@ navigation = "2.8.9"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }

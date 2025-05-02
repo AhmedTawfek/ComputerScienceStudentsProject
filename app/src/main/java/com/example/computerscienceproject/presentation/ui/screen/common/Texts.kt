@@ -10,13 +10,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.computerscienceproject.presentation.ui.theme.grotaFontFamily
 import com.example.computerscienceproject.presentation.ui.theme.lightGrey
 
 @Composable
 fun HeaderTitle(
     modifier: Modifier = Modifier,
     text: String,
-    textStyle: TextStyle = MaterialTheme.typography.titleLarge,
+    textStyle: TextStyle = MaterialTheme.typography.titleLarge.copy(fontFamily = grotaFontFamily),
     textColor: Color = MaterialTheme.colorScheme.onBackground,
 ) {
     Text(modifier = modifier, text = text, style = textStyle, color = textColor)
