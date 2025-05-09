@@ -1,5 +1,6 @@
 [versions]
 agp = "8.5.0"
+generativeai = "0.9.0"
 kotlin = "1.9.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -20,9 +21,13 @@ serialization = "1.6.3"
 ## Navigation ##
 hiltNavigationCompose = "1.2.0"
 navigation = "2.8.9"
+## LOTTIE ANIMATIONS ##
+lottieCompose = "6.6.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
+lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

@@ -54,7 +54,7 @@ object Chatbot : Screen, ScreenAppBar{
 }
 
 @Serializable
-object Calories : Screen, ScreenAppBar{
+object CaloriesScanner : Screen, ScreenAppBar{
     override val route: String = "calories"
     override val name: String = "Calories"
     override val selectedIcon: Int = R.drawable.fire_selected_icon

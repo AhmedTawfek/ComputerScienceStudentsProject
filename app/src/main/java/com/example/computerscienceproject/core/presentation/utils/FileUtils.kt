@@ -3,7 +3,11 @@ package com.example.computerscienceproject.core.presentation.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.content.FileProvider
@@ -72,4 +76,18 @@ fun getFileFromUri(context: Context,fileUri: Uri,fileName: String) : File {
     }
 
     return file
+}
+
+fun getBitmapFromUri(context: Context,fileUri: Uri) : Bitmap?{
+    try {
+        if (Build.VERSION.SDK_INT < 28) {
+            return MediaStore.Images.Media.getBitmap(context.contentResolver, fileUri)
+        } else {
+            val source = ImageDecoder.createSource(context.contentResolver, fileUri)
+            return ImageDecoder.decodeBitmap(source)
+        }
+    }catch (e:Exception){
+        Log.e("Error", "Failed to get bitmap from uri: ${e.message}")
+        return null
+    }
 }

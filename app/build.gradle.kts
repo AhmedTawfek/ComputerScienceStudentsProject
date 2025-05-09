@@ -85,6 +85,12 @@ dependencies {
     // Navigation //
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.navigation.compose)
+
+    // Gemini SDK //
+    implementation(libs.generativeai)
+
+    // Lottie animation //
+    implementation(libs.lottie.compose)
 }
 
 kapt {

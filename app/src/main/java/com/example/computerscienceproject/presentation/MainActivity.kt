@@ -3,15 +3,15 @@ package com.example.computerscienceproject.presentation
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imeNestedScroll
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -36,19 +36,18 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.computerscienceproject.presentation.ui.screen.common.BottomNavigationBar
 import com.example.computerscienceproject.presentation.ui.screen.common.BottomNavigationItem
-import com.example.computerscienceproject.presentation.ui.screen.navigation.Calories
+import com.example.computerscienceproject.presentation.ui.screen.navigation.CaloriesScanner
 import com.example.computerscienceproject.presentation.ui.screen.navigation.Chatbot
 import com.example.computerscienceproject.presentation.ui.screen.navigation.Home
 import com.example.computerscienceproject.presentation.ui.screen.navigation.Navigation
 import com.example.computerscienceproject.presentation.ui.screen.navigation.Profile
-import com.example.computerscienceproject.presentation.ui.screen.sign_up.SignUpScreen
 import com.example.computerscienceproject.presentation.ui.theme.ComputerScienceProjectTheme
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalLayoutApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -62,7 +61,7 @@ class MainActivity : ComponentActivity() {
             val screensList = listOf(
                 Home,
                 Chatbot,
-                Calories,
+                CaloriesScanner,
                 Profile
             )
 
@@ -71,7 +70,7 @@ class MainActivity : ComponentActivity() {
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                     Scaffold(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier.fillMaxSize().imeNestedScroll(),
                         snackbarHost = {
                             SnackbarHost(hostState = snackbarHostState)
                         },

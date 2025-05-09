@@ -3,6 +3,7 @@ package com.example.computerscienceproject.presentation.ui.screen.common
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -39,7 +40,7 @@ fun PrimaryButton(
     onClick: () -> Unit,
 ) {
     Button(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().height(54.dp),
         enabled = isEnabled,
         colors = ButtonDefaults.buttonColors(containerColor = buttonColor, disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant),
         shape = RoundedCornerShape(7.dp),
@@ -49,8 +50,7 @@ fun PrimaryButton(
         if (isLoading) {
             CircularProgressIndicator(
                 trackColor = MaterialTheme.colorScheme.onPrimary, modifier = Modifier
-                    .size(35.dp)
-                    .padding(4.dp)
+                    .size(25.dp)
             )
         } else {
             Text(modifier = textModifier, text = text, style = textStyle, color = if (isEnabled) textColor else MaterialTheme.colorScheme.onSurfaceVariant)
@@ -79,6 +79,16 @@ fun BackButton(
 private fun PreviewBackButton() {
     ComputerScienceProjectTheme {
         BackButton {
+
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun PreviewPrimaryButton() {
+    ComputerScienceProjectTheme {
+        PrimaryButton(text = "", isLoading = true) {
 
         }
     }

@@ -13,6 +13,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.computerscienceproject.core.presentation.utils.ToastMessageModel
 import com.example.computerscienceproject.core.presentation.utils.handleEvent
+import com.example.computerscienceproject.presentation.ui.screen.calories_scanner.CaloriesScannerScreen
+import com.example.computerscienceproject.presentation.ui.screen.calories_scanner.viewmodel.CaloriesScannerViewModel
+import com.example.computerscienceproject.presentation.ui.screen.chatbot.ChatbotScreen
+import com.example.computerscienceproject.presentation.ui.screen.chatbot.viewmodel.ChatBotViewModel
 import com.example.computerscienceproject.presentation.ui.screen.home.HomeScreen
 import com.example.computerscienceproject.presentation.ui.screen.sign_in.SignInScreen
 import com.example.computerscienceproject.presentation.ui.screen.sign_in.viewmodel.SignInViewModel
@@ -35,7 +39,7 @@ fun Navigation(
 
     val signUpViewModel = hiltViewModel<SignUpViewModel>(viewModelStoreOwner)
 
-    NavHost(navController = navHostController, startDestination = SignUp){
+    NavHost(navController = navHostController, startDestination = Home){
 
         composable<SignUp>{
             showBottomNavigation(false)
@@ -88,5 +92,44 @@ fun Navigation(
             )
         }
 
+        composable<Chatbot>{
+            showBottomNavigation(false)
+
+            val chatBotViewModel = hiltViewModel<ChatBotViewModel>(
+                viewModelStoreOwner = viewModelStoreOwner
+            )
+
+            val state by chatBotViewModel.uiState.collectAsStateWithLifecycle()
+
+            ChatbotScreen(
+                modifier = Modifier.padding(paddingValues),
+                state = state,
+                onAction = chatBotViewModel::handleEvents,
+                screenEvents = chatBotViewModel.events,
+                onScreenEvents = {
+                    it.handleEvent(navHostController, showSnackbar)
+                }
+            )
+        }
+
+        composable<CaloriesScanner>{
+            showBottomNavigation(false)
+
+            val caloriesScannerViewModel = hiltViewModel<CaloriesScannerViewModel>(
+                viewModelStoreOwner = viewModelStoreOwner
+            )
+
+            val state by caloriesScannerViewModel.uiState.collectAsStateWithLifecycle()
+
+            CaloriesScannerScreen(
+                modifier = Modifier.padding(paddingValues),
+                uiState = state,
+                onAction = caloriesScannerViewModel::handleEvents,
+                screenEvents = caloriesScannerViewModel.events,
+                onScreenEvents = {
+                    it.handleEvent(navHostController, showSnackbar)
+                }
+            )
+        }
     }
 }
