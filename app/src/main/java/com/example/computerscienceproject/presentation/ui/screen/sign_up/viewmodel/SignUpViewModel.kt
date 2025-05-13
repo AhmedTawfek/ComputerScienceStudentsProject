@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val registerRepository: AuthRepo
+    private val registerRepository: AuthRepo,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUiState())
@@ -52,15 +52,15 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun validateConfirmPassword(confirmPassword: String){
-        if (_uiState.value.password != confirmPassword){
+    private fun validateConfirmPassword(confirmPassword: String) {
+        if (_uiState.value.password != confirmPassword) {
             _uiState.update { it.copy(confirmPasswordError = "Passwords do not match") }
-        }else{
+        } else {
             _uiState.update { it.copy(confirmPasswordError = "") }
         }
     }
 
-    private fun validatePassword(password: String){
+    private fun validatePassword(password: String) {
         if (password.isEmpty()) {
             _uiState.update {
                 it.copy(passwordError = "You cannot leave the password empty.")
@@ -68,9 +68,9 @@ class SignUpViewModel @Inject constructor(
             return
         }
 
-        if (password.length >= 8){
+        if (password.length >= 8) {
             _uiState.update { it.copy(passwordError = "") }
-        }else{
+        } else {
             _uiState.update { it.copy(passwordError = "Password is too small.") }
         }
     }
@@ -92,17 +92,18 @@ class SignUpViewModel @Inject constructor(
 
     fun getAgeStrings(): List<String> = (10..100).map { it.toString() }
 
-    fun getWeightsStrings() : List<String> = (40..200).map { "$it kg" }
+    fun getWeightsStrings(): List<String> = (40..200).map { "$it kg" }
 
-    fun getHeightsStrings() : List<String> = (150..220).map { "$it cm" }
+    fun getHeightsStrings(): List<String> = (150..220).map { "$it cm" }
 
-    private fun initializeUserInfoList(){
+    private fun initializeUserInfoList() {
         val userInfoList = listOf(
             UserInfoModel(
                 infoType = UserInfoType.Checkbox,
                 title = "What is your Gender?",
                 options = listOf("Male", "Female"),
-                selectedIndex = -1),
+                selectedIndex = -1
+            ),
             UserInfoModel(
                 infoType = UserInfoType.WheelPicker,
                 title = "What is your age?",
@@ -113,7 +114,8 @@ class SignUpViewModel @Inject constructor(
                 infoType = UserInfoType.WheelPicker,
                 title = "What is your weight?",
                 options = getWeightsStrings(),
-                selectedIndex = 20),
+                selectedIndex = 20
+            ),
             UserInfoModel(
                 infoType = UserInfoType.WheelPicker,
                 title = "What is your height?",
@@ -123,27 +125,53 @@ class SignUpViewModel @Inject constructor(
             UserInfoModel(
                 infoType = UserInfoType.Checkbox,
                 title = "What is your activity level?",
-                options = listOf("Not Very Active", "Lightly Active", "Active","Very Active"),
-                selectedIndex = -1)
+                options = listOf("Not Very Active", "Lightly Active", "Active", "Very Active"),
+                selectedIndex = -1
+            ),
+            UserInfoModel(
+                infoType = UserInfoType.TimePicker,
+                title = "When do you usually go to sleep?",
+                options = listOf(), // Options not needed for a time picker
+                selectedIndex = -1
+            ),
+            UserInfoModel(
+                infoType = UserInfoType.WheelPicker,
+                title = "How many hours do you sleep?",
+                options = (1..24).map { "$it hours" },
+                selectedIndex = 7 // Default to 8 hours
+            ),
         )
-
         _uiState.update {
             it.copy(userInfoList = userInfoList)
         }
     }
 
-    private fun updatePageIndex(selectedIndex: Int){
+    private fun updatePageIndex(selectedIndex: Int) {
         _uiState.update {
             it.copy(currentPageIndex = selectedIndex)
         }
     }
 
-    private fun updateSelectedIndexInUserInfo(selectedIndex: Int){
+    private fun updateSelectedIndexInUserInfo(selectedIndex: Int) {
         _uiState.update {
             it.copy(
                 userInfoList = it.userInfoList.mapIndexed { index, userInfoModel ->
                     if (index == it.currentPageIndex) {
                         userInfoModel.copy(selectedIndex = selectedIndex)
+                    } else {
+                        userInfoModel
+                    }
+                }
+            )
+        }
+    }
+
+    private fun updateSelectedTime(time: String) {
+        _uiState.update {
+            it.copy(
+                userInfoList = it.userInfoList.mapIndexed { index, userInfoModel ->
+                    if (index == it.currentPageIndex) {
+                        userInfoModel.copy(selectedValue = time, selectedIndex = 0)
                     } else {
                         userInfoModel
                     }
@@ -160,13 +188,20 @@ class SignUpViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
 
-            val selectedGender = _uiState.value.userInfoList[0].options[_uiState.value.userInfoList[0].selectedIndex]
-            val selectedAge = _uiState.value.userInfoList[1].options[_uiState.value.userInfoList[1].selectedIndex]
-            val selectedWeight = _uiState.value.userInfoList[2].options[_uiState.value.userInfoList[2].selectedIndex]
-            val selectedHeight = _uiState.value.userInfoList[3].options[_uiState.value.userInfoList[3].selectedIndex]
-            val selectedActivityLevel = _uiState.value.userInfoList[4].selectedIndex+1
+            val selectedGender =
+                _uiState.value.userInfoList[0].options[_uiState.value.userInfoList[0].selectedIndex]
+            val selectedAge =
+                _uiState.value.userInfoList[1].options[_uiState.value.userInfoList[1].selectedIndex]
+            val selectedWeight =
+                _uiState.value.userInfoList[2].options[_uiState.value.userInfoList[2].selectedIndex]
+            val selectedHeight =
+                _uiState.value.userInfoList[3].options[_uiState.value.userInfoList[3].selectedIndex]
+            val selectedActivityLevel = _uiState.value.userInfoList[4].selectedIndex + 1
 
-            Log.d("Register", "SelectedGender =$selectedGender | SelectedAge = $selectedAge | SelectedWeight = $selectedWeight | SelectedHeight = $selectedHeight | SelectedActivity = $selectedActivityLevel")
+            Log.d(
+                "Register",
+                "SelectedGender =$selectedGender | SelectedAge = $selectedAge | SelectedWeight = $selectedWeight | SelectedHeight = $selectedHeight | SelectedActivity = $selectedActivityLevel"
+            )
 
             _events.send(ScreenEvents.Navigate(Home))
             return@launch
@@ -197,40 +232,48 @@ class SignUpViewModel @Inject constructor(
     }
 
 
-    private fun updateName(name: String){
+    private fun updateName(name: String) {
         _uiState.update { it.copy(name = name) }
     }
-    private fun updateEmail(email: String){
+
+    private fun updateEmail(email: String) {
         _uiState.update { it.copy(email = email) }
     }
-    private fun updatePassword(password: String){
+
+    private fun updatePassword(password: String) {
         _uiState.update { it.copy(password = password) }
     }
-    private fun updateConfirmPassword(confirmPassword: String){
+
+    private fun updateConfirmPassword(confirmPassword: String) {
         _uiState.update { it.copy(confirmPassword = confirmPassword) }
     }
 
-    fun handleEvents(event: SignUpScreenEvents){
-        when(event){
+    fun handleEvents(event: SignUpScreenEvents) {
+        when (event) {
             is SignUpScreenEvents.EmailChanged -> {
                 updateEmail(email = event.email)
             }
+
             is SignUpScreenEvents.PasswordChanged -> {
                 updatePassword(password = event.password)
             }
+
             is SignUpScreenEvents.ConfirmPasswordChanged -> {
                 updateConfirmPassword(confirmPassword = event.confirmPassword)
             }
+
             is SignUpScreenEvents.ValidateEmail -> {
                 validateEmail(email = _uiState.value.email, errorMessage = event.emailError)
             }
 
-             SignUpScreenEvents.ValidateConfirmPassword -> {
+            SignUpScreenEvents.ValidateConfirmPassword -> {
                 validateConfirmPassword(confirmPassword = _uiState.value.confirmPassword)
             }
-             SignUpScreenEvents.ValidatePassword -> {
+
+            SignUpScreenEvents.ValidatePassword -> {
                 validatePassword(password = _uiState.value.password)
             }
+
             is SignUpScreenEvents.NameChanged -> {
                 updateName(name = event.name)
             }
@@ -255,14 +298,17 @@ class SignUpViewModel @Inject constructor(
 
             // User Info
             is SignUpScreenEvents.OnNextClicked -> {
-                updatePageIndex(_uiState.value.currentPageIndex+1)
+                updatePageIndex(_uiState.value.currentPageIndex + 1)
             }
+
             is SignUpScreenEvents.OnPreviousClicked -> {
-                updatePageIndex(_uiState.value.currentPageIndex-1)
+                updatePageIndex(_uiState.value.currentPageIndex - 1)
             }
+
             is SignUpScreenEvents.OnCheckboxClicked -> {
                 updateSelectedIndexInUserInfo(event.index)
             }
+
             is SignUpScreenEvents.OnWheelPickerSelected -> {
                 updateSelectedIndexInUserInfo(event.index)
             }
@@ -276,6 +322,10 @@ class SignUpViewModel @Inject constructor(
                     _events.send(ScreenEvents.Navigate(Login))
                 }
             }
+
+            is SignUpScreenEvents.OnTimeSelected -> {
+                updateSelectedTime(event.time)
+            }
         }
     }
 }
@@ -285,17 +335,17 @@ data class SignUpUiState(
     val nameError: String = "",
     val email: String = "",
     val emailError: String = "",
-    val password : String = "",
+    val password: String = "",
     val passwordError: String = "",
-    val confirmPassword : String = "",
+    val confirmPassword: String = "",
     val confirmPasswordError: String = "",
-    val userInfoList : List<UserInfoModel> = emptyList(),
-    val currentPageIndex : Int = 0,
+    val userInfoList: List<UserInfoModel> = emptyList(),
+    val currentPageIndex: Int = 0,
     val isLoading: Boolean = false,
-    val navigateToUserInfo : Boolean = false
+    val navigateToUserInfo: Boolean = false,
 )
 
-sealed class SignUpScreenEvents{
+sealed class SignUpScreenEvents {
     data class NameChanged(val name: String) : SignUpScreenEvents()
     data class EmailChanged(val email: String) : SignUpScreenEvents()
     data class PasswordChanged(val password: String) : SignUpScreenEvents()
@@ -311,22 +361,26 @@ sealed class SignUpScreenEvents{
     // User Info Screen Events
     object OnNextClicked : SignUpScreenEvents()
     object OnPreviousClicked : SignUpScreenEvents()
-    data class OnCheckboxClicked(val index : Int) : SignUpScreenEvents()
-    data class OnWheelPickerSelected(val index : Int) : SignUpScreenEvents()
+    data class OnCheckboxClicked(val index: Int) : SignUpScreenEvents()
+    data class OnWheelPickerSelected(val index: Int) : SignUpScreenEvents()
+    data class OnTimeSelected(val time: String) : SignUpScreenEvents()
 }
 
 data class UserInfoUiState(
-    val currentPageIndex : Int = 0,
-    val userInfoList : List<UserInfoModel> = emptyList()
+    val currentPageIndex: Int = 0,
+    val userInfoList: List<UserInfoModel> = emptyList(),
 )
 
 data class UserInfoModel(
-    val title : String,
-    val infoType : UserInfoType,
-    val selectedIndex : Int = -1,
-    val options : List<String>
+    val title: String,
+    val infoType: UserInfoType,
+    val selectedIndex: Int = -1,
+    val options: List<String>,
+    val selectedValue: String = "",
 )
 
-enum class UserInfoType{
-    Checkbox,WheelPicker
+enum class UserInfoType {
+    Checkbox,
+    WheelPicker,
+    TimePicker
 }

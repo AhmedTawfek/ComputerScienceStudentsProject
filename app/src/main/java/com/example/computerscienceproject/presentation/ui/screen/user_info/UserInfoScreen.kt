@@ -1,5 +1,6 @@
 package com.example.computerscienceproject.presentation.ui.screen.user_info
 
+import android.app.TimePickerDialog
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,9 +15,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
@@ -61,7 +67,7 @@ fun UserInfoScreen(
                 title = "What is your height?",
                 options = (150..220).map { "$it cm" },
                 selectedIndex = 20
-            )
+            ),
         )
     ),
     onAction: (SignUpScreenEvents) -> Unit = {},
@@ -76,7 +82,7 @@ fun UserInfoScreen(
         }
     }
 
-    Column(modifier = modifier.padding(vertical = 10.dp, horizontal = 24.dp)) {
+    Column(modifier = modifier.padding(vertical = 10.dp)) {
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -96,6 +102,8 @@ fun UserInfoScreen(
         )
 
         HorizontalPager(
+            modifier = Modifier.padding(horizontal = 24.dp),
+            userScrollEnabled = false,
             state = pagerState
         ) { currentPageIndex ->
             when (userInfoUiState.userInfoList[currentPageIndex].infoType) {
@@ -121,13 +129,24 @@ fun UserInfoScreen(
                         }
                     )
                 }
+
+                UserInfoType.TimePicker -> {
+                    UserInfoTimePicker(
+                        title = userInfoUiState.userInfoList[currentPageIndex].title,
+                        selectedTime = userInfoUiState.userInfoList[currentPageIndex].selectedValue,
+                        onTimeSelected = {
+                            Log.d("UserInfo","SelectedTime => $it")
+                            onAction(SignUpScreenEvents.OnTimeSelected(it))
+                        }
+                    )
+                }
             }
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
             verticalAlignment = Alignment.CenterVertically) {
 
             if (userInfoUiState.currentPageIndex > 0) {
@@ -226,6 +245,54 @@ fun UserInfoWheelPicker(
         )
     }
 }
+
+
+
+@Composable
+fun UserInfoTimePicker(
+    modifier: Modifier = Modifier,
+    title: String,
+    selectedTime: String,
+    onTimeSelected: (String) -> Unit
+) {
+    val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
+
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        PrimaryButton(text = selectedTime.ifEmpty { "Select Time" }) {
+            showDialog = true
+        }
+
+        if (showDialog) {
+            val timePickerDialog = TimePickerDialog(
+                context,
+                { _, hour: Int, minute: Int ->
+                    val amPm = if (hour < 12) "AM" else "PM"
+                    val hour12 = when {
+                        hour == 0 -> 12
+                        hour > 12 -> hour - 12
+                        else -> hour
+                    }
+                    val formatted = String.format("%02d:%02d %s", hour12, minute, amPm)
+                    onTimeSelected(formatted)
+                    showDialog = false
+                },
+                10, 0, false // <- false = 12-hour format
+            )
+            timePickerDialog.show()
+        }
+    }
+}
+
+
 
 @Preview
 @Composable

@@ -39,7 +39,7 @@ fun Navigation(
 
     val signUpViewModel = hiltViewModel<SignUpViewModel>(viewModelStoreOwner)
 
-    NavHost(navController = navHostController, startDestination = Home){
+    NavHost(navController = navHostController, startDestination = UserInfo){
 
         composable<SignUp>{
             showBottomNavigation(false)
