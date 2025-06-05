@@ -61,14 +61,9 @@ class ChatBotViewModel @Inject constructor(
             }
 
             try {
-                Log.d("ChatBotViewModel", "ChatHistory = ${chat.history.map { it.parts.map { it.asTextOrNull() } }}")
-                //Log.d("ChatBotViewModel", "Billing Info = ${generativeModel}")
-
                 val response = chat.sendMessage(
                     content(role = "user") { text(message) }
                 )
-
-                Log.d("ChatBotViewModel", "Response: $response")
 
                 val modelResponse = response.text?.trimEnd() ?: "Sorry, I didn't understand that."
 
@@ -86,6 +81,7 @@ class ChatBotViewModel @Inject constructor(
                     it.copy(isLoading = false,
                         messageInputText = inputMessageTemp)
                 }
+                _events.send(ScreenEvents.ShowSnackbar("Error sending message"))
             }
         }
     }
