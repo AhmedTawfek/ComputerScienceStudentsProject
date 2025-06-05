@@ -51,7 +51,10 @@ fun PrimaryIndicator(
             .width(50.dp)
             .height(16.dp)
             .background(cardColor, shape = RoundedCornerShape(size = 25.dp))
-            .border(BorderStroke(width = 1.dp, color = borderColor), shape = RoundedCornerShape(size = 25.dp))
+            .border(
+                BorderStroke(width = 1.dp, color = borderColor),
+                shape = RoundedCornerShape(size = 25.dp)
+            )
     )
 }
 
@@ -93,27 +96,6 @@ fun UserInfoIndicators(
         }
     }
 }
-
-//@Composable
-//fun UserInfoIndicators(
-//    modifier: Modifier = Modifier,
-//    count: Int = 4,
-//    currentSelectedIndex: Int = 0,
-//) {
-//    Row(
-//        modifier = modifier
-//            .fillMaxWidth()
-//            .height(20.dp),
-//        verticalAlignment = Alignment.CenterVertically,
-//        horizontalArrangement = Arrangement.Center
-//    ) {
-//        repeat(count) { currentIndex ->
-//            PrimaryIndicator(
-//                modifier = Modifier.padding(horizontal = 3.dp),
-//                isSelected = currentIndex <= currentSelectedIndex)
-//        }
-//    }
-//}
 
 @Preview
 @Composable

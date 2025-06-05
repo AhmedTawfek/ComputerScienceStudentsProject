@@ -18,6 +18,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,6 +35,8 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.computerscienceproject.data.local.DataStoreDataSource
+import com.example.computerscienceproject.presentation.di.dataStore
 import com.example.computerscienceproject.presentation.ui.screen.common.BottomNavigationBar
 import com.example.computerscienceproject.presentation.ui.screen.common.BottomNavigationItem
 import com.example.computerscienceproject.presentation.ui.screen.navigation.CaloriesScanner
@@ -61,8 +64,7 @@ class MainActivity : ComponentActivity() {
             val screensList = listOf(
                 Home,
                 Chatbot,
-                CaloriesScanner,
-                Profile
+                CaloriesScanner
             )
 
             ComputerScienceProjectTheme {

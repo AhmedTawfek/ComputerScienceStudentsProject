@@ -3,25 +3,16 @@ package com.example.computerscienceproject.presentation.ui.screen.calories_scann
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
-import android.os.Build
-import android.provider.MediaStore
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -36,35 +27,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.computerscienceproject.R
 import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
 import com.example.computerscienceproject.core.presentation.utils.getBitmapFromUri
 import com.example.computerscienceproject.presentation.ui.screen.calories_scanner.viewmodel.CaloriesScannerScreenEvents
 import com.example.computerscienceproject.presentation.ui.screen.calories_scanner.viewmodel.CaloriesScannerUiState
-import com.example.computerscienceproject.presentation.ui.screen.calories_scanner.viewmodel.CaloriesScannerViewModel
-import com.example.computerscienceproject.presentation.ui.screen.chatbot.viewmodel.ChatBotScreenEvents
-import com.example.computerscienceproject.presentation.ui.screen.chatbot.viewmodel.ChatbotUiState
 import com.example.computerscienceproject.presentation.ui.screen.common.BackButton
 import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryButton
+import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryTopBar
 import com.example.computerscienceproject.presentation.ui.theme.*
-import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.content
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @Composable
 fun CaloriesScannerScreen(
@@ -109,11 +85,10 @@ fun CaloriesScannerScreen(
     ) {
         Spacer(modifier = Modifier.height(10.dp))
 
-        TopBar(
+        PrimaryTopBar(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopStart)
-                .padding(top = 10.dp)
                 .onGloballyPositioned { layoutCoordinates ->
                     with(density) {
                         topBarHeight = layoutCoordinates.size.height.toDp()
@@ -225,31 +200,7 @@ fun SegmentedCircularProgress(
     }
 }
 
-@Composable
-fun TopBar(
-    modifier: Modifier = Modifier,
-    title : String = "Calories Scanner",
-    onScreenEvents: (ScreenEvents) -> Unit = {},
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.background),
-    ) {
-        BackButton(modifier = Modifier.align(Alignment.TopStart)) {
-            onScreenEvents(ScreenEvents.NavigateBack)
-        }
 
-        Text(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .padding(horizontal = 8.dp),
-            text = title,
-            style = MaterialTheme.typography.titleLarge.copy(fontSize = 20.sp),
-            color = MaterialTheme.colorScheme.onBackground
-        )
-    }
-}
 
 
 @Composable

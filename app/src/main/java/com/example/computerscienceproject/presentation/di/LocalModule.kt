@@ -14,7 +14,6 @@ import dagger.hilt.components.SingletonComponent
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
-
 @Module
 @InstallIn(SingletonComponent::class)
 object LocalModule {

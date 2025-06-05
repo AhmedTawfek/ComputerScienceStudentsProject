@@ -23,18 +23,18 @@ class HomeRepo(
     }
 
     suspend fun getWorkoutPlans() : Result<List<WorkoutPlansModel>, NetworkError> {
-        return safeApiCall { homeApi.getCategories() }.map {
+        return safeApiCall { homeApi.getWorkoutPlans() }.map {
             it.data
         }
     }
 
-    suspend fun getExercisesCategories(id: Int) : Result<ExercisesCategoryModel, NetworkError> {
+    suspend fun getExercisesCategories(id: Int) : Result<List<ExercisesCategoryModel>, NetworkError> {
         return safeApiCall { homeApi.getExercisesCategories(id) }.map {
             it.data
         }
     }
 
-    suspend fun getExercises(subCategoryId: Int) : Result<ExercisesModel, NetworkError> {
+    suspend fun getExercises(subCategoryId: Int) : Result<List<ExercisesModel>, NetworkError> {
         return safeApiCall { homeApi.getExercises(subCategoryId) }.map {
             it.data
         }

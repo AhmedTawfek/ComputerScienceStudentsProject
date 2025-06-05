@@ -1,5 +1,6 @@
 package com.example.computerscienceproject.core.presentation.utils
 
+import java.text.DecimalFormat
 import java.util.regex.Pattern
 
 fun validateFullName(fullName: String): Boolean {
@@ -37,4 +38,15 @@ fun isEmailCorrect(email: String): Boolean {
     val pattern = Pattern.compile(emailRegex)
 
     return pattern.matcher(email).matches()
+}
+
+fun formatNumberWithCommas(numberStr: String): String {
+    return try {
+        val number = numberStr.toDouble()
+        val formatter = DecimalFormat("#,###")
+        formatter.format(number)
+    } catch (e: NumberFormatException) {
+        // Return original string if it's not a valid number
+        numberStr
+    }
 }

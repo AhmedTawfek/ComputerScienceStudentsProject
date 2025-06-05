@@ -61,15 +61,17 @@ fun PrimaryButton(
 @Composable
 fun BackButton(
     modifier: Modifier = Modifier,
+    background: Color = lightGrey4,
+    iconColor: Color = MaterialTheme.colorScheme.onBackground,
     onClick: () -> Unit) {
 
     IconButton(
         modifier = modifier
             .size(40.dp)
-            .background(color = lightGrey4, shape = CircleShape)
+            .background(color = background, shape = CircleShape)
             .clip(CircleShape),
         onClick = onClick) {
-        Icon(painter = painterResource(id = R.drawable.arrow_back_icon),tint = MaterialTheme.colorScheme.onBackground, contentDescription = null)
+        Icon(painter = painterResource(id = R.drawable.arrow_back_icon),tint = iconColor, contentDescription = null)
     }
 
 }

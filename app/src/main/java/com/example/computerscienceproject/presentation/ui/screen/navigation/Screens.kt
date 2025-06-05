@@ -14,6 +14,22 @@ interface ScreenAppBar{
 }
 
 @Serializable
+object Welcome : Screen {
+    override val route: String
+        get() = "welcome"
+    override val name: String
+        get() = "Welcome"
+}
+
+@Serializable
+object Splash : Screen {
+    override val route: String
+        get() = "splash"
+    override val name: String
+        get() = "Splash"
+}
+
+@Serializable
 data object Login : Screen {
     override val route: String
         get() = "login"
@@ -43,6 +59,12 @@ object Home : Screen, ScreenAppBar{
     override val name: String = "Home"
     override val selectedIcon: Int = R.drawable.home_icon_selected
     override val unSelectedIcon: Int = R.drawable.home_not_selected_icon
+}
+
+@Serializable
+data class Exercises(val id : Int,val title : String) : Screen{
+    override val route: String = "exercises"
+    override val name: String = "Exercises"
 }
 
 @Serializable

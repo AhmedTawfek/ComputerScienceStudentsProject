@@ -1,6 +1,8 @@
 package com.example.computerscienceproject.presentation.ui.screen.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -23,8 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.computerscienceproject.R
 import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
+import com.example.computerscienceproject.core.presentation.utils.formatNumberWithCommas
 import com.example.computerscienceproject.presentation.ui.screen.common.SafeImage
+import com.example.computerscienceproject.presentation.ui.screen.errors.TimeoutScreen
+import com.example.computerscienceproject.presentation.ui.screen.home.viewmodel.HomeScreenEvents
 import com.example.computerscienceproject.presentation.ui.screen.home.viewmodel.HomeUiState
+import com.example.computerscienceproject.presentation.ui.screen.navigation.Exercises
 import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpScreenEvents
 import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpUiState
 import com.example.computerscienceproject.presentation.ui.theme.ComputerScienceProjectTheme
@@ -34,6 +40,7 @@ import kotlinx.coroutines.flow.emptyFlow
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier,
                state: HomeUiState = HomeUiState(),
+               onEvent : (HomeScreenEvents) -> Unit = {},
                screenEvents : Flow<ScreenEvents> = emptyFlow(),
                onScreenEvents : (ScreenEvents) -> Unit = {}) {
 
@@ -44,6 +51,13 @@ fun HomeScreen(modifier: Modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             CircularProgressIndicator()
+        }
+        return
+    }
+
+    if (state.initialDataError){
+        TimeoutScreen {
+            onEvent(HomeScreenEvents.Retry)
         }
         return
     }
@@ -71,7 +85,7 @@ fun HomeScreen(modifier: Modifier = Modifier,
                 modifier = Modifier.weight(1.5f),
                 icon = R.drawable.calories_icon,
                 title = "Calories",
-                value = formatWithComma(state.homeModel.calories),
+                value = formatNumberWithCommas(state.homeModel.calories),
                 valueSubtitle = "Kcal"
             )
             InfoCard(
@@ -101,10 +115,18 @@ fun HomeScreen(modifier: Modifier = Modifier,
             items(state.workoutPlansModel.size){ index ->
                 WorkoutPlanCard(
                     imageUrl = state.workoutPlansModel[index].image,
-                    title = state.workoutPlansModel[index].name
+                    title = state.workoutPlansModel[index].name,
+                    onClick = {
+                        onScreenEvents(ScreenEvents.Navigate(Exercises(state.workoutPlansModel[index].id,state.workoutPlansModel[index].name)))
+                    }
                 )
             }
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+            }
         }
+
+
     }
 }
 
@@ -168,10 +190,14 @@ fun InfoCard(
 }
 
 @Composable
-fun WorkoutPlanCard(imageUrl: String, title: String) {
+fun WorkoutPlanCard(imageUrl: String, title: String,description : String = "",onClick : () -> Unit = {}) {
     Card(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable(
+                enabled = true,
+                onClick = onClick
+            ),
         shape = RoundedCornerShape(12.dp)
     ) {
         Column {
@@ -190,13 +216,15 @@ fun WorkoutPlanCard(imageUrl: String, title: String) {
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
                 color = Color.White
             )
-//            Spacer(modifier = Modifier.height(4.dp))
-//            Text(
-//                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-//                text = description,
-//                style = MaterialTheme.typography.bodySmall,
-//                color = Color.Gray
-//            )
+            if (description.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+            }
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
@@ -210,10 +238,4 @@ private fun HomeScreenPreview() {
         HomeScreen()
     }
 
-}
-
-fun formatWithComma(input: String): String {
-    return input.toIntOrNull()?.let {
-        "%,d".format(it)
-    } ?: input // Return original if not a valid number
 }

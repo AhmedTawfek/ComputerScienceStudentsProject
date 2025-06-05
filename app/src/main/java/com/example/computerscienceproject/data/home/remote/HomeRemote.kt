@@ -10,22 +10,21 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface  HomeApi{
-    @GET("home")
+    @GET("dashboard")
     suspend fun getHome(
         @Query("api_token") token: String
     ) : Response<ApiResponse<HomeModel>>
 
     @GET("categories")
-    suspend fun getCategories(
-    ) : Response<ApiResponse<List<WorkoutPlansModel>>>
+    suspend fun getWorkoutPlans() : Response<ApiResponse<List<WorkoutPlansModel>>>
 
     @GET("sub_categories")
     suspend fun getExercisesCategories(
         @Query("category_id") id: Int
-    ) : Response<ApiResponse<ExercisesCategoryModel>>
+    ) : Response<ApiResponse<List<ExercisesCategoryModel>>>
 
     @GET("exercises")
     suspend fun getExercises(
         @Query("sub_category_id") id: Int
-    ) : Response<ApiResponse<ExercisesModel>>
+    ) : Response<ApiResponse<List<ExercisesModel>>>
 }

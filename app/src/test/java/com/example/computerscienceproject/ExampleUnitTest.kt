@@ -1,8 +1,10 @@
 package com.example.computerscienceproject
 
+import android.util.Log
 import org.junit.Test
 
 import org.junit.Assert.*
+import java.text.DecimalFormat
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -15,3 +17,4 @@ class ExampleUnitTest {
         assertEquals(4, 2 + 2)
     }
 }
+

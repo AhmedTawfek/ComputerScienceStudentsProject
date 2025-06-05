@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import coil3.compose.AsyncImage
 import com.example.computerscienceproject.core.data.networking.ApiConstants.BASE_URL
+import com.example.computerscienceproject.core.data.networking.ApiConstants.IMAGES_BASE_URL
 
 @Composable
 fun SafeImage(
@@ -32,7 +33,7 @@ fun SafeImage(
         }
 
         AsyncImage(
-            model = "$BASE_URL$imageUrl",
+            model = "$IMAGES_BASE_URL$imageUrl",
             contentDescription = null,
             modifier = modifier
                 .then(if (isClickable) Modifier.clickable { if (!showShimmer) onClick() } else Modifier
