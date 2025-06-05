@@ -18,6 +18,7 @@ import com.example.computerscienceproject.presentation.ui.screen.calories_scanne
 import com.example.computerscienceproject.presentation.ui.screen.chatbot.ChatbotScreen
 import com.example.computerscienceproject.presentation.ui.screen.chatbot.viewmodel.ChatBotViewModel
 import com.example.computerscienceproject.presentation.ui.screen.home.HomeScreen
+import com.example.computerscienceproject.presentation.ui.screen.home.viewmodel.HomeVIewModel
 import com.example.computerscienceproject.presentation.ui.screen.sign_in.SignInScreen
 import com.example.computerscienceproject.presentation.ui.screen.sign_in.viewmodel.SignInViewModel
 import com.example.computerscienceproject.presentation.ui.screen.sign_up.SignUpScreen
@@ -39,7 +40,7 @@ fun Navigation(
 
     val signUpViewModel = hiltViewModel<SignUpViewModel>(viewModelStoreOwner)
 
-    NavHost(navController = navHostController, startDestination = UserInfo){
+    NavHost(navController = navHostController, startDestination = Login){
 
         composable<SignUp>{
             showBottomNavigation(false)
@@ -86,9 +87,20 @@ fun Navigation(
 
         composable<Home> {
 
+            val homeViewModel = hiltViewModel<HomeVIewModel>(
+                viewModelStoreOwner = viewModelStoreOwner
+            )
+
+            val state by homeViewModel.uiState.collectAsStateWithLifecycle()
+
             showBottomNavigation(true)
             HomeScreen(
-                modifier = Modifier.padding(paddingValues)
+                modifier = Modifier.padding(paddingValues),
+                state = state,
+                screenEvents = homeViewModel.events,
+                onScreenEvents = {
+                    it.handleEvent(navHostController, showSnackbar)
+                },
             )
         }
 

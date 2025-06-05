@@ -12,7 +12,7 @@ suspend fun <T> safeApiCall(apiCall:suspend () -> Response<T>): Result<T, Networ
     } catch (ioException: IOException) {
         return Result.Error(NetworkError.NoInternet)
     } catch (e: Exception){
-        Log.d("Home", "safeApiCall: $e")
+        Log.d("Home", "safeApiCall: $e | ${e.message} ${e.cause}")
         return Result.Error(NetworkError.UNKNOWN)
     }
     Log.d("Home", "safeApiCall: $response")

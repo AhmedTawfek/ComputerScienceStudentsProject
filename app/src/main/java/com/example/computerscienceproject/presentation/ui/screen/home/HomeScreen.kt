@@ -2,9 +2,11 @@ package com.example.computerscienceproject.presentation.ui.screen.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,10 +22,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.computerscienceproject.R
+import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
+import com.example.computerscienceproject.presentation.ui.screen.common.SafeImage
+import com.example.computerscienceproject.presentation.ui.screen.home.viewmodel.HomeUiState
+import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpScreenEvents
+import com.example.computerscienceproject.presentation.ui.screen.sign_up.viewmodel.SignUpUiState
 import com.example.computerscienceproject.presentation.ui.theme.ComputerScienceProjectTheme
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier,
+               state: HomeUiState = HomeUiState(),
+               screenEvents : Flow<ScreenEvents> = emptyFlow(),
+               onScreenEvents : (ScreenEvents) -> Unit = {}) {
+
+    if (state.isLoading){
+        Column(
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -32,7 +56,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         // Greeting Section
         Text(
             modifier = Modifier.padding(top = 30.dp),
-            text = "Hello, Ahmed 👋",
+            text = "Hello, ${state.homeModel.name} 👋",
             style = MaterialTheme.typography.titleLarge,
             color = Color.White
         )
@@ -47,14 +71,14 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.weight(1.5f),
                 icon = R.drawable.calories_icon,
                 title = "Calories",
-                value = "2,400",
+                value = formatWithComma(state.homeModel.calories),
                 valueSubtitle = "Kcal"
             )
             InfoCard(
                 modifier = Modifier.weight(1f),
                 icon = R.drawable.water_icon,
                 title = "Water",
-                value = "4",
+                value = state.homeModel.water,
                 valueSubtitle = "Liters"
             )
         }
@@ -70,19 +94,17 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        WorkoutPlanCard(
-            imageRes = R.drawable.workout_image,
-            title = "Push Pull Leg",
-            description = "Short details about this workout plan"
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        WorkoutPlanCard(
-            imageRes = R.drawable.workout_image,
-            title = "Full body",
-            description = "Short details about this workout plan"
-        )
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(state.workoutPlansModel.size){ index ->
+                WorkoutPlanCard(
+                    imageUrl = state.workoutPlansModel[index].image,
+                    title = state.workoutPlansModel[index].name
+                )
+            }
+        }
     }
 }
 
@@ -146,21 +168,20 @@ fun InfoCard(
 }
 
 @Composable
-fun WorkoutPlanCard(imageRes: Int, title: String, description: String) {
+fun WorkoutPlanCard(imageUrl: String, title: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
         shape = RoundedCornerShape(12.dp)
     ) {
         Column {
-            Image(
+            SafeImage(
+                imageUrl = imageUrl,
                 modifier = Modifier
                     .padding(3.dp)
                     .fillMaxWidth()
                     .height(120.dp)
                     .clip(RoundedCornerShape(12.dp)),
-                painter = painterResource(id = imageRes),
-                contentDescription = null,
                 contentScale = ContentScale.Crop,
             )
             Text(
@@ -169,13 +190,13 @@ fun WorkoutPlanCard(imageRes: Int, title: String, description: String) {
                 style = MaterialTheme.typography.titleLarge.copy(fontSize = 18.sp),
                 color = Color.White
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
-                text = description,
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
+//            Spacer(modifier = Modifier.height(4.dp))
+//            Text(
+//                modifier = Modifier.padding(start = 20.dp, end = 20.dp),
+//                text = description,
+//                style = MaterialTheme.typography.bodySmall,
+//                color = Color.Gray
+//            )
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
@@ -189,4 +210,10 @@ private fun HomeScreenPreview() {
         HomeScreen()
     }
 
+}
+
+fun formatWithComma(input: String): String {
+    return input.toIntOrNull()?.let {
+        "%,d".format(it)
+    } ?: input // Return original if not a valid number
 }

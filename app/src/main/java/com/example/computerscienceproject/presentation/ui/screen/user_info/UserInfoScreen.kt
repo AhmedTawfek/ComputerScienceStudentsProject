@@ -159,10 +159,10 @@ fun UserInfoScreen(
                 Spacer(modifier = Modifier.fillMaxWidth(0.1f))
             }
 
-            Log.d("Checkbox", "CurrentPage = ${userInfoUiState.currentPageIndex} | SelectedIndex: ${userInfoUiState.userInfoList[userInfoUiState.currentPageIndex].selectedIndex}")
             PrimaryButton(
+                isLoading = userInfoUiState.isLoading,
                 text = if (userInfoUiState.currentPageIndex < userInfoUiState.userInfoList.size - 1) "Next" else "Finish",
-                isEnabled = (userInfoUiState.userInfoList[userInfoUiState.currentPageIndex].selectedIndex) != -1) {
+                isEnabled = (userInfoUiState.userInfoList[userInfoUiState.currentPageIndex].selectedIndex) != -1 && !userInfoUiState.isLoading) {
 
                 if (userInfoUiState.currentPageIndex < userInfoUiState.userInfoList.size - 1) {
                     onAction(SignUpScreenEvents.OnNextClicked)

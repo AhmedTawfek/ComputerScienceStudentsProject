@@ -5,7 +5,7 @@ import com.example.computerscienceproject.presentation.ui.screen.navigation.Home
 import com.example.computerscienceproject.presentation.ui.screen.navigation.Login
 
 sealed class ScreenEvents {
-    data class Navigate(val screenToNavigate: Any) : ScreenEvents()
+    data class Navigate(val screenToNavigate: Any,val popUpAllScreens : Boolean = false) : ScreenEvents()
     data class NavigateWithArgs(
         val screenToNavigate: Any,
         val argsKey: String,
@@ -28,7 +28,7 @@ fun ScreenEvents.handleEvent(
         is ScreenEvents.Navigate -> {
             navHostController.navigate(this.screenToNavigate) {
                 launchSingleTop = true
-                if (this@handleEvent.screenToNavigate == Home) {
+                if (this@handleEvent.screenToNavigate == Home || this@handleEvent.screenToNavigate == Login) {
                     popUpTo(0)
                 }
             }

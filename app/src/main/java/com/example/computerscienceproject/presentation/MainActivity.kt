@@ -116,11 +116,14 @@ class MainActivity : ComponentActivity() {
                             showBottomNavigation = { show ->
                                 showBottomBar = show
                             },
-                            showSnackbar = {
+                            showSnackbar = { toastMessageModel ->
                                 scope.launch {
                                     snackbarHostState.currentSnackbarData?.dismiss()
+                                    val message = toastMessageModel.message.ifEmpty {
+                                        this@MainActivity.getString(toastMessageModel.messageResource)
+                                    }
                                     snackbarHostState.showSnackbar(
-                                        message = it.message,
+                                        message = message,
                                     )
                                 }
                             })

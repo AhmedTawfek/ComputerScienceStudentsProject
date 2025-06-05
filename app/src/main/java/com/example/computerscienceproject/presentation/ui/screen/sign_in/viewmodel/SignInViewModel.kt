@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.computerscienceproject.core.data.networking.onError
 import com.example.computerscienceproject.core.data.networking.onSuccess
+import com.example.computerscienceproject.core.presentation.utils.ErrorMessage
 import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
 import com.example.computerscienceproject.core.presentation.utils.isEmailCorrect
 import com.example.computerscienceproject.core.presentation.utils.toMessage
+import com.example.computerscienceproject.data.auth.model.LoginRequestBody
 import com.example.computerscienceproject.data.auth.repo.AuthRepo
 import com.example.computerscienceproject.presentation.ui.screen.navigation.Home
 import com.example.computerscienceproject.presentation.ui.screen.navigation.SignUp
@@ -78,10 +80,22 @@ class SignInViewModel @Inject constructor(
         _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch(Dispatchers.IO) {
 
+           val loginRequestBody = LoginRequestBody(
+               email = _uiState.value.email,
+               password = _uiState.value.password,
+               firebaseToken = "zzz"
+           )
+
             val result = authRepo.login(
-                email = _uiState.value.email,
-                password = _uiState.value.password,
+                loginRequestBody
             ).onSuccess { result ->
+
+                if (!result.status){
+                    _uiState.update { it.copy(isLoading = false) }
+                    _events.send(ScreenEvents.ShowErrorMessage(message = ErrorMessage(message = result.message)))
+                    return@launch
+                }
+
                 _uiState.update { it.copy(isLoading = false) }
                 _events.send(
                     ScreenEvents.Navigate(
@@ -89,6 +103,7 @@ class SignInViewModel @Inject constructor(
                     )
                 )
             }.onError { error ->
+                Log.d("login", "error = $error | message = ${error.toMessage()}")
                 _uiState.update { it.copy(isLoading = false) }
                 _events.send(ScreenEvents.ShowErrorMessage(error.toMessage()))
             }

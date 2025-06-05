@@ -33,6 +33,9 @@ fun <T> responseToResult(response: Response<T>): Result<T, NetworkError> {
             Log.d("Home", "safeApiCall: ${response.errorBody()}")
             Result.Error(NetworkError.ServerError)
         }
-        else -> Result.Error(NetworkError.UNKNOWN)
+        else -> {
+            Log.d("Home", "safeApiCall: ${response.errorBody()} | ${response.errorBody()} ${response.body()}")
+            Result.Error(NetworkError.UNKNOWN)
+        }
     }
 }

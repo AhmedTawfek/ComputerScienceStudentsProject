@@ -75,6 +75,9 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.converter.gson)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.logging.interceptor)
+    implementation(libs.coil.compose.v300rc02)
+    implementation(libs.coil.network.okhttp)
 
     // Dependency Injection //
     implementation(libs.hilt.android)

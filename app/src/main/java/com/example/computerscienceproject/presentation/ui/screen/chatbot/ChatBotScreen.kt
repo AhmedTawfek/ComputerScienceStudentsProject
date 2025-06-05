@@ -76,7 +76,6 @@ import com.example.computerscienceproject.presentation.ui.screen.chatbot.viewmod
 import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryOutlinedTextField
 import com.example.computerscienceproject.presentation.ui.screen.common.textFieldColors
 import com.example.computerscienceproject.presentation.ui.theme.ComputerScienceProjectTheme
-import com.example.computerscienceproject.presentation.ui.theme.Space
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 

@@ -5,17 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.computerscienceproject.core.data.networking.onError
 import com.example.computerscienceproject.core.data.networking.onSuccess
+import com.example.computerscienceproject.core.presentation.utils.ErrorMessage
 import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
 import com.example.computerscienceproject.core.presentation.utils.isEmailCorrect
 import com.example.computerscienceproject.core.presentation.utils.toMessage
 import com.example.computerscienceproject.core.presentation.utils.validateFullName
+import com.example.computerscienceproject.data.auth.model.RegisterRequestBody
 import com.example.computerscienceproject.data.auth.repo.AuthRepo
-import com.example.computerscienceproject.presentation.ui.screen.navigation.Home
 import com.example.computerscienceproject.presentation.ui.screen.navigation.Login
-import com.example.computerscienceproject.presentation.ui.screen.navigation.SignUp
 import com.example.computerscienceproject.presentation.ui.screen.navigation.UserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -185,8 +184,8 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun register() {
-        _uiState.update { it.copy(isLoading = true) }
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
 
             val selectedGender =
                 _uiState.value.userInfoList[0].options[_uiState.value.userInfoList[0].selectedIndex]
@@ -197,16 +196,13 @@ class SignUpViewModel @Inject constructor(
             val selectedHeight =
                 _uiState.value.userInfoList[3].options[_uiState.value.userInfoList[3].selectedIndex]
             val selectedActivityLevel = _uiState.value.userInfoList[4].selectedIndex + 1
+            val selectedSleepFrom =
+                _uiState.value.userInfoList[5].selectedValue
+            val selectedSleepTo =
+                _uiState.value.userInfoList[6].options[_uiState.value.userInfoList[6].selectedIndex]
 
-            Log.d(
-                "Register",
-                "SelectedGender =$selectedGender | SelectedAge = $selectedAge | SelectedWeight = $selectedWeight | SelectedHeight = $selectedHeight | SelectedActivity = $selectedActivityLevel"
-            )
 
-            _events.send(ScreenEvents.Navigate(Home))
-            return@launch
-
-            val result = registerRepository.register(
+            val registerRequestBody = RegisterRequestBody(
                 name = _uiState.value.name,
                 email = _uiState.value.email,
                 password = _uiState.value.password,
@@ -214,15 +210,31 @@ class SignUpViewModel @Inject constructor(
                 age = selectedAge,
                 weight = selectedWeight,
                 height = selectedHeight,
-                activity = selectedActivityLevel.toString()
+                activity = selectedActivityLevel.toString(),
+                sleepAt = selectedSleepFrom,
+                sleepTo = selectedSleepTo,
+                firebaseToken = "zzz"
+            )
+
+            val result = registerRepository.register(
+                registerRequestBody
             ).onSuccess { result ->
+                if (!result.status) {
+                    _uiState.update { it.copy(isLoading = false) }
+                    _events.send(ScreenEvents.ShowErrorMessage(message = ErrorMessage(message = result.message)))
+                    return@launch
+                }
+
                 _uiState.update { it.copy(isLoading = false) }
+                _events.send(ScreenEvents.ShowSuccessMessage("Account created successfully"))
                 _events.send(
                     ScreenEvents.Navigate(
-                        Home
+                        Login,
+                        popUpAllScreens = true
                     )
                 )
             }.onError { error ->
+                Log.d("Register", "error = $error | message = ${error.toMessage()}")
                 _uiState.update { it.copy(isLoading = false) }
                 _events.send(ScreenEvents.ShowErrorMessage(error.toMessage()))
             }
@@ -293,7 +305,6 @@ class SignUpViewModel @Inject constructor(
                 viewModelScope.launch {
                     _events.send(ScreenEvents.Navigate(UserInfo))
                 }
-                //register()
             }
 
             // User Info

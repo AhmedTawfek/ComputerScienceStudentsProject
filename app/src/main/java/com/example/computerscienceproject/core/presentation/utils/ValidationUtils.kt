@@ -29,7 +29,6 @@ fun validateFullName(fullName: String): Boolean {
 }
 
 fun isEmailCorrect(email: String): Boolean {
-
     if (email.isEmpty()){
         return false
     }

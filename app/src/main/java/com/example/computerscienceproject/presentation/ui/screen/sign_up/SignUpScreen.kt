@@ -42,6 +42,14 @@ import com.example.computerscienceproject.presentation.ui.theme.ComputerScienceP
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
+// Screen
+//// - BUttons, texts
+// ViewModel - StateHolder - stateMAnagement
+// Data
+
+// Presentation logic
+// Bussiness logic
+
 @Composable
 fun SignUpScreen(
     modifier: Modifier = Modifier,
@@ -205,7 +213,6 @@ fun SignUpScreen(
 
         }
     }
-
 }
 
 @Preview
