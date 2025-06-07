@@ -13,13 +13,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.computerscienceproject.R
 import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
 import com.example.computerscienceproject.presentation.ui.screen.common.PrimaryButton
@@ -66,7 +64,6 @@ fun WelcomeScreen(
             )
         }
 
-
         PrimaryButton(
             modifier = Modifier
                 .align(androidx.compose.ui.Alignment.BottomCenter)
@@ -76,7 +73,6 @@ fun WelcomeScreen(
             onScreenEvents(ScreenEvents.Navigate(Login))
         }
     }
-
 }
 
 @Preview

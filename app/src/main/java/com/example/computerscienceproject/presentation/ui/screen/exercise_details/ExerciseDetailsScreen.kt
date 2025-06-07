@@ -32,9 +32,8 @@ fun ExerciseDetailsScreen(
     closeScreen : () -> Unit = {}) {
 
     Column(modifier = modifier.fillMaxSize().background(color = MaterialTheme.colorScheme.background)) {
-        Box(
-        ){
 
+        Box{
             SafeImage(
                 modifier = Modifier
                     .fillMaxWidth()

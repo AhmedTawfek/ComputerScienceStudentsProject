@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Computer Science Project</string>
+    <string name="app_name">LifeSync</string>
     <string name="network_not_available">No internet connection!</string>
     <string name="api_error">Something went wrong, please try again.</string>
 

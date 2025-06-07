@@ -77,11 +77,6 @@ class CaloriesScannerViewModel @Inject constructor(
                     },
                 )
 
-                // Count tokens before sending
-//                val tokenCount = generativeModel.countTokens(content)
-//                val inputTokens = tokenCount.totalTokens
-//                Log.d("CaloriesScannerViewModel","Gemini: Input tokens: $inputTokens") // Or log this properly
-
                 val response = generativeModel.generateContent(
                     content
                 )

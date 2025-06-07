@@ -3,10 +3,15 @@ package com.example.computerscienceproject.presentation.ui.screen.home
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -38,13 +43,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier,
-               state: HomeUiState = HomeUiState(),
-               onEvent : (HomeScreenEvents) -> Unit = {},
-               screenEvents : Flow<ScreenEvents> = emptyFlow(),
-               onScreenEvents : (ScreenEvents) -> Unit = {}) {
-
-    if (state.isLoading){
+fun HomeScreen(
+    modifier: Modifier = Modifier,
+    state: HomeUiState = HomeUiState(),
+    onEvent: (HomeScreenEvents) -> Unit = {},
+    screenEvents: Flow<ScreenEvents> = emptyFlow(),
+    onScreenEvents: (ScreenEvents) -> Unit = {}
+) {
+    if (state.isLoading) {
         Column(
             modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -55,16 +61,19 @@ fun HomeScreen(modifier: Modifier = Modifier,
         return
     }
 
-    if (state.initialDataError){
+    if (state.initialDataError) {
         TimeoutScreen {
             onEvent(HomeScreenEvents.Retry)
         }
         return
     }
 
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
+            .verticalScroll(scrollState)
             .padding(horizontal = 16.dp)
     ) {
         // Greeting Section
@@ -108,27 +117,30 @@ fun HomeScreen(modifier: Modifier = Modifier,
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
+        // Replacing LazyColumn with Column
+        Column(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(state.workoutPlansModel.size){ index ->
+            state.workoutPlansModel.forEachIndexed { index, workoutPlan ->
                 WorkoutPlanCard(
-                    imageUrl = state.workoutPlansModel[index].image,
-                    title = state.workoutPlansModel[index].name,
+                    imageUrl = workoutPlan.image,
+                    title = workoutPlan.name,
                     onClick = {
-                        onScreenEvents(ScreenEvents.Navigate(Exercises(state.workoutPlansModel[index].id,state.workoutPlansModel[index].name)))
+                        onScreenEvents(
+                            ScreenEvents.Navigate(
+                                Exercises(workoutPlan.id, workoutPlan.name)
+                            )
+                        )
                     }
                 )
             }
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-            }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
-
-
     }
 }
+
+
 
 @Composable
 fun InfoCard(

@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
 
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
                     Scaffold(
-                        modifier = Modifier.fillMaxSize().imeNestedScroll(),
+                        modifier = Modifier.fillMaxSize(),
                         snackbarHost = {
                             SnackbarHost(hostState = snackbarHostState)
                         },

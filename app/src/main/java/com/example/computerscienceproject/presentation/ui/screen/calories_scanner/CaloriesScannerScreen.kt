@@ -1,5 +1,6 @@
 package com.example.computerscienceproject.presentation.ui.screen.calories_scanner
 
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.rememberAsyncImagePainter
 import com.example.computerscienceproject.core.presentation.utils.ScreenEvents
 import com.example.computerscienceproject.core.presentation.utils.getBitmapFromUri
 import com.example.computerscienceproject.presentation.ui.screen.calories_scanner.viewmodel.CaloriesScannerScreenEvents
@@ -59,13 +61,17 @@ fun CaloriesScannerScreen(
         }
     }
 
+    var selectedImageUri : Uri? by remember {
+        mutableStateOf(null)
+    }
+
     val pickImageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
-            Log.d("CaloriesScannerScreen", "Selected image URI: $uri")
             if (uri != null){
                 val bitmap = getBitmapFromUri(context, uri)
                 if (bitmap != null) {
+                    selectedImageUri = uri
                     onAction(CaloriesScannerScreenEvents.ProcessSelectedImage(bitmap))
                 }
             }
@@ -101,16 +107,18 @@ fun CaloriesScannerScreen(
             .align(Alignment.TopStart)
             .padding(vertical = topBarHeight + 50.dp)) {
             
-            if (uiState.imageBitmap != null) {
-                Image(
-                    modifier = Modifier
-                        .padding(horizontal = 60.dp)
-                        .height(250.dp)
-                        .clip(RoundedCornerShape(24.dp)),
-                    bitmap = uiState.imageBitmap.asImageBitmap(),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop
-                )
+            if (selectedImageUri != null) {
+                selectedImageUri?.let { uri ->
+                    Image(
+                        painter = rememberAsyncImagePainter(uri),
+                        contentDescription = "Selected Image",
+                        modifier = Modifier
+                            .padding(horizontal = 60.dp)
+                            .height(250.dp)
+                            .clip(RoundedCornerShape(24.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }else{
                 Spacer(modifier = Modifier.size(250.dp))
             }

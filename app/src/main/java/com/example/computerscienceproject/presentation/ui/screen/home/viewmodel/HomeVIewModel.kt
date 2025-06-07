@@ -41,6 +41,7 @@ class HomeVIewModel @Inject constructor(
                 .onError {  error ->
                     _uiState.update { it.copy(initialDataError = true) }
                 }
+
             homeRepo.getWorkoutPlans()
                 .onSuccess { workoutPlansModel ->
                     _uiState.update { it.copy(workoutPlansModel = workoutPlansModel,initialDataError = false) }

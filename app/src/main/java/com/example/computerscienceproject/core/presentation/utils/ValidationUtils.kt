@@ -29,6 +29,8 @@ fun validateFullName(fullName: String): Boolean {
     return namePattern.matches(trimmedFullName)
 }
 
+
+
 fun isEmailCorrect(email: String): Boolean {
     if (email.isEmpty()){
         return false

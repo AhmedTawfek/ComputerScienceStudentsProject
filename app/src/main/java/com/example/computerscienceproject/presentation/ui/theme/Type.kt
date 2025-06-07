@@ -8,7 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.computerscienceproject.R
 
-
 val robotoFontFamily = FontFamily(
     Font(R.font.roboto_medium, FontWeight.Medium),
     Font(R.font.roboto_bold, FontWeight.Bold),
@@ -45,5 +44,4 @@ val Typography = Typography(
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
     ),
-
 )

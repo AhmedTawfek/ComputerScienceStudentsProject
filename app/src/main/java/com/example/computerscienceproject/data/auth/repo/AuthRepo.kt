@@ -32,7 +32,6 @@ class AuthRepo(
             it
         }
         loginResult.onSuccess {
-            Log.d("login", "token = ${it.data}")
             dataStoreDataSource.saveValueToDataStore(key = DataStoreDataSource.USER_TOKEN, value = it.data)
         }
         return loginResult

@@ -94,6 +94,7 @@ class ExercisesViewModel @Inject constructor(
     }
 
     fun initExercises(id: Int, title: String) {
+
         viewModelScope.launch {
             _uiState.update {
                 it.copy(
@@ -101,13 +102,17 @@ class ExercisesViewModel @Inject constructor(
                     initialLoading = true
                 )
             }
+
             getExercisesCategories()
+
             if (_uiState.value.exercisesCategory.isNotEmpty()){
                 _uiState.update { it.copy(currentSelectedSubCategoryId = it.exercisesCategory.first().id) }
             }
+
             getExercises()
             _uiState.update { it.copy(initialLoading = false) }
         }
+
     }
 }
 

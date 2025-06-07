@@ -234,7 +234,6 @@ class SignUpViewModel @Inject constructor(
                     )
                 )
             }.onError { error ->
-                Log.d("Register", "error = $error | message = ${error.toMessage()}")
                 _uiState.update { it.copy(isLoading = false) }
                 _events.send(ScreenEvents.ShowErrorMessage(error.toMessage()))
             }
